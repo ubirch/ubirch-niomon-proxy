@@ -79,6 +79,7 @@ func PostUpp(c *fiber.Ctx) error {
 		req.Header.Add("x-ubirch-credential", zuc)
 		req.Header.Add("Content-Type", ct)
 		resp, err := hc.Do(req)
+
 		if err != nil {
 			c.SendStatus(http.StatusBadRequest)
 		}
@@ -116,7 +117,7 @@ func main() {
 	apiV1.Get("/init/", InitTokens)
 	apiV1.Post("/upp/", PostUpp)
 
-	err := app.Listen(":3000")
+	err := app.Listen("159.69.183.131:3000")
 	if err != nil {
 		log.Error("could not start server: ", err.Error())
 	}
