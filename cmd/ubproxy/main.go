@@ -6,6 +6,7 @@ import (
 	"github.com/dermicha/goutils/database"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/utils"
+	"github.com/gofrs/uuid"
 	log "github.com/sirupsen/logrus"
 	configUtil "github.com/ubirch/ubirch-niomon-proxy/pkg/confutil"
 	"github.com/ubirch/ubirch-niomon-proxy/pkg/model/token"
@@ -33,10 +34,12 @@ func InitTokens(c *fiber.Ctx) error {
 		return err
 	}
 
-	for i := int32(0); i < 1024; i++ {
+	for i := int32(0); i < (10 * 1024); i++ {
+		uuid, _ := uuid.NewV4()
 
 		atok := token.AnkerToken{}
-		atok.Token = utils.UUID()
+		atok.Token = uuid.String()
+
 		atok.UsedState = false
 		db := database.GetDb()
 		res := db.Create(&atok)
