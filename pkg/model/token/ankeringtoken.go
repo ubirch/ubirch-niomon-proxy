@@ -18,7 +18,7 @@ func IsValidToken(token string) bool {
 	db.
 		Limit(1).
 		Where("token= ?", token).
-		Where("used_state > 0").
+		Where("used_counter > 0").
 		Find(&ats)
 
 	if len(ats) == 1 {
@@ -35,7 +35,7 @@ func UseToken(token string) int {
 	db.
 		Limit(1).
 		Where("token= ?", token).
-		Where("used_state > 0").
+		Where("used_counter > 0").
 		Find(&ats)
 
 	if len(ats) == 1 {
