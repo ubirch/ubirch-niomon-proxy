@@ -28,39 +28,40 @@ func aboutService(c *fiber.Ctx) error {
 
 func InitTokens(c *fiber.Ctx) error {
 
-	filename := fmt.Sprintf("authtokens_%s.csv", utils.UUID())
-	f, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-
-	for i := int32(0); i < (10 * 1024); i++ {
-		uuid, _ := uuid.NewV4()
-
-		atok := token.AnkerToken{}
-		atok.Token = uuid.String()
-
-		atok.UsedState = false
-		db := database.GetDb()
-		res := db.Create(&atok)
-		if res.Error != nil {
-			return res.Error
-		}
-
-		_, err := f.WriteString(fmt.Sprintf("%s\n", atok.Token))
+	sizes := []int{1, 10, 50, 100}
+	for _, s := range sizes {
+		filename := fmt.Sprintf("authtokens_%d_%s.csv", s, utils.UUID())
+		f, err := os.Create(filename)
 		if err != nil {
-			f.Close()
+			return err
+		}
+		for i := int32(0); i < (1024); i++ {
+			u, _ := uuid.NewV4()
+
+			atok := token.AnkerToken{}
+			atok.Token = u.String()
+
+			atok.UsedCounter = s
+			db := database.GetDb()
+			res := db.Create(&atok)
+			if res.Error != nil {
+				return res.Error
+			}
+
+			_, err := f.WriteString(fmt.Sprintf("%s\n", atok.Token))
+			if err != nil {
+				f.Close()
+				return err
+			}
+		}
+		err = f.Close()
+		if err != nil {
 			return err
 		}
 	}
 
-	err = f.Close()
-	if err != nil {
-		return err
-	}
-
-	c.SendString("OK: tokens created")
-	return nil
+	err := c.SendString("OK: tokens created")
+	return err
 }
 
 func PostUpp(c *fiber.Ctx) error {
@@ -84,7 +85,8 @@ func PostUpp(c *fiber.Ctx) error {
 		resp, err := hc.Do(req)
 
 		if err != nil {
-			c.SendStatus(http.StatusBadRequest)
+			err = c.SendStatus(http.StatusBadRequest)
+			return err
 		}
 
 		if resp.StatusCode < 300 {
