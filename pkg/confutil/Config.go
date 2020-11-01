@@ -17,6 +17,7 @@ var (
 
 type Configuration struct {
 	NiomonUrl string `json:"niomon_url"`
+	DbFile    string `json:"db_file"`
 }
 
 func getConfFile() (string, error) {

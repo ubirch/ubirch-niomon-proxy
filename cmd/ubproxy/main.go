@@ -17,7 +17,6 @@ import (
 var (
 	appName    = "Ubirch Niomon Proxy"
 	appVersion = "v0.0.1"
-	dbName     = "ubproxy"
 	config     = configUtil.GetConfig()
 )
 
@@ -109,7 +108,7 @@ func main() {
 	})
 	log.SetLevel(log.DebugLevel)
 
-	database.InitDatabase(dbName, nil)
+	database.InitDatabase(config.DbFile, nil)
 	database.MigrateDatabase(&token.AnkerToken{})
 
 	log.Info("Welcome!")

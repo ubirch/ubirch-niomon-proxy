@@ -1,3 +1,4 @@
 {
-  "niomon_url" : "https://niomon.prod.ubirch.com/"
+  "niomon_url" : "https://niomon.dev.ubirch.com/",
+  "db_file": "ubproxy.db"
 }
